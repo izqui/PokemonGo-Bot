@@ -57,7 +57,7 @@ def init_config():
 
     envconfig = os.environ.get("POKEMON_BOT_CONFIG")
     if envconfig:
-        load.update(json.load(envconfig))
+        load.update(json.loads(envconfig))
     else:
         # Select a config file code
         config_arg = unicode(parser.parse_args().config)
