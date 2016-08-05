@@ -53,15 +53,20 @@ def init_config():
     # If config file exists, load variables from json
     load = {}
 
-    # Select a config file code
     parser.add_argument("-cf", "--config", help="Config File to use")
-    config_arg = unicode(parser.parse_args().config)
-    if os.path.isfile(config_arg):
-        with open(config_arg) as data:
-            load.update(json.load(data))
-    elif os.path.isfile(config_file):
-        with open(config_file) as data:
-            load.update(json.load(data))
+
+    envconfig = os.environ.get("POKEMON_BOT_CONFIG")
+    if envconfig:
+        load.update(json.load(envconfig))
+    else:
+        # Select a config file code
+        config_arg = unicode(parser.parse_args().config)
+        if os.path.isfile(config_arg):
+            with open(config_arg) as data:
+                load.update(json.load(data))
+        elif os.path.isfile(config_file):
+            with open(config_file) as data:
+                load.update(json.load(data))
 
     # Read passed in Arguments
     required = lambda x: not x in load
@@ -147,6 +152,7 @@ def init_config():
                         default=False)
 
     config = parser.parse_args()
+
     if not config.username and 'username' not in load:
         config.username = raw_input("Username: ")
     if not config.password and 'password' not in load:
@@ -174,7 +180,7 @@ def init_config():
             config.release_config.update(json.load(data))
 
     # create web dir if not exists
-    try: 
+    try:
         os.makedirs(web_dir)
     except OSError:
         if not os.path.isdir(web_dir):
